@@ -50,42 +50,40 @@
 <div class="container mt-5">
     <div class="form-container">
         <h2 class="header-title text-center mb-4">Registro</h2>
-        <form id="authForm" method="POST" action="">
+        <form method="POST" action="{{ route('registro.post') }}">
             @csrf
-            <!-- Nombre -->
             <div class="form-group mb-3">
                 <label for="name">Nombre</label>
-                <input type="text" id="name" name="name" class="form-control" placeholder="Nombre Completo" required>
+                <input type="text" id="name" name="name" class="form-control" 
+                       value="{{ old('name') }}" required>
                 @error('name')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
-            <!-- Correo -->
+
             <div class="form-group mb-3">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Correo Electrónico" required>
+                <input type="email" id="email" name="email" class="form-control" 
+                       value="{{ old('email') }}" required>
                 @error('email')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
-            <!-- Contraseña -->
+
             <div class="form-group mb-3">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required>
+                <input type="password" id="password" name="password" 
+                       class="form-control" required>
                 @error('password')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
-       
-            <button type="submit" class="btn btn-primary w-100">Crear Cuenta</button>
+
+            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
         </form>
-        <div class="mt-4 text-center">
-            <button class="btn btn-secondary">
-                <i class="fab fa-google me-2"></i> Google
-            </button>
-            <button class="btn btn-secondary mt-2">
-                <i class="fab fa-facebook me-2"></i> Facebook
-            </button>
+
+        <div class="mt-3 text-center">
+            <p>¿Ya tienes una cuenta? <a href="{{ route('sesion') }}">Inicia Sesión</a></p>
         </div>
     </div>
 </div>

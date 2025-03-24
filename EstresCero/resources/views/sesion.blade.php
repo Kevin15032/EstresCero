@@ -50,13 +50,13 @@
 <div class="container mt-5">
     <div class="form-container">
         <h2 class="header-title text-center mb-4">Iniciar Sesión</h2>
-        <form method="POST" action="{{ route('sesion') }}">
+        <form method="POST" action="{{ route('sesion.post') }}">
             @csrf
             <!-- Correo -->
             <div class="form-group mb-3">
                 <label for="email">Correo Electrónico</label>
                 <input type="email" id="email" name="email" class="form-control" 
-                       placeholder="Correo Electrónico" required>
+                       placeholder="Correo Electrónico" value="{{ old('email') }}" required>
                 @error('email')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
