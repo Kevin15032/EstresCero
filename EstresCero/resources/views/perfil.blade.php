@@ -29,6 +29,24 @@
         font-weight: bold;
         color: #457B9D;
     }
+    .profile-info img {
+        border: 4px solid #457B9D;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+    }
+    .profile-info img:hover {
+        transform: scale(1.05);
+    }
+    .btn-danger {
+        background-color: #e63946;
+        border-color: #e63946;
+        transition: all 0.3s ease;
+    }
+    .btn-danger:hover {
+        background-color: #dc2f3d;
+        border-color: #dc2f3d;
+        transform: translateY(-2px);
+    }
 </style>
 @endsection
 
@@ -46,14 +64,59 @@
 
                 <!-- Información estática -->
                 <div class="profile-info" id="profileInfo">
+                    <div class="text-center mb-4">
+                        @if($user->avatar)
+                            <img src="{{ asset('storage/' . $user->avatar) }}" 
+                                 class="rounded-circle mb-3" 
+                                 style="width: 150px; height: 150px; object-fit: cover;"
+                                 alt="Avatar">
+                        @else
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random&color=fff&size=150&bold=true" 
+                                 class="rounded-circle mb-3"
+                                 style="width: 150px; height: 150px; object-fit: cover;"
+                                 alt="Avatar">
+                        @endif
+                    </div>
                     <p><span class="profile-label">Nombre:</span> {{ $user->name }}</p>
                     <p><span class="profile-label">Correo:</span> {{ $user->email }}</p>
+                    
+                    <!-- Agregar el botón de cerrar sesión -->
+                    <div class="text-center mt-4">
+                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                            @csrf
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                            </button>
+                        </form>
+                    </div>
                 </div>
 
                 <!-- Formulario de edición (oculto por defecto) -->
                 <div class="edit-form" id="editForm">
-                    <form action="{{ route('perfil.update') }}" method="POST">
+                    <form action="{{ route('perfil.update') }}" method="POST" enctype="multipart/form-data">
                         @csrf
+                        <!-- Avatar actual y subida -->
+                        <div class="mb-4 text-center">
+                            @if($user->avatar)
+                                <img src="{{ asset('storage/' . $user->avatar) }}" 
+                                     class="rounded-circle mb-3" 
+                                     style="width: 150px; height: 150px; object-fit: cover;"
+                                     alt="Avatar">
+                            @else
+                                <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random&color=fff&size=150&bold=true" 
+                                     class="rounded-circle mb-3"
+                                     style="width: 150px; height: 150px; object-fit: cover;"
+                                     alt="Avatar">
+                            @endif
+                            <div class="mb-3">
+                                <label for="avatar" class="form-label">Cambiar foto de perfil</label>
+                                <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
+                                @error('avatar')
+                                    <small class="text-danger">{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+
                         <div class="mb-3">
                             <label for="name" class="form-label">Nombre Completo</label>
                             <input type="text" class="form-control" id="name" name="name" 

@@ -61,54 +61,52 @@
 
 @section('contenido')
 <main class="container mt-4 clearfix">
-    <form class="mb-4">
+    <form action="{{ route('seguimiento.store') }}" method="POST" class="mb-4">
+        @csrf
         <div class="mb-3">
             <label for="date" class="form-label">Fecha</label>
-            <input type="date" class="form-control" id="date" required>
+            <input type="date" class="form-control" id="date" name="date" required>
+            @error('date')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
         <div class="mb-3">
-            <label for="stressLevel" class="form-label">Nivel de Estrés</label>
-            <select class="form-control" id="stressLevel" required>
+            <label for="stress_level" class="form-label">Nivel de Estrés</label>
+            <select class="form-control" id="stress_level" name="stress_level" required>
                 <option value="Bajo">Bajo</option>
                 <option value="Medio">Medio</option>
                 <option value="Alto">Alto</option>
             </select>
+            @error('stress_level')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="emotion" class="form-label">Emoción</label>
-            <input type="text" class="form-control" id="emotion" required>
+            <input type="text" class="form-control" id="emotion" name="emotion" required>
+            @error('emotion')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
         <div class="mb-3">
             <label for="comment" class="form-label">Comentario</label>
-            <textarea class="form-control" id="comment" rows="3" required></textarea>
+            <textarea class="form-control" id="comment" name="comment" rows="3" required></textarea>
+            @error('comment')
+                <small class="text-danger">{{ $message }}</small>
+            @enderror
         </div>
         <button type="submit" class="btn btn-custom">Agregar</button>
     </form>
 
     <div id="entries">
-        <!-- Entrada 1 -->
+        @foreach($entries as $entry)
         <div class="entry">
-            <h3>2024-03-22</h3>
-            <p><strong>Nivel de Estrés:</strong> Bajo</p>
-            <p><strong>Emoción:</strong> Feliz</p>
-            <p class="fst-italic">"Buen día de estudio"</p>
+            <h3>{{ $entry->date->format('Y-m-d') }}</h3>
+            <p><strong>Nivel de Estrés:</strong> {{ $entry->stress_level }}</p>
+            <p><strong>Emoción:</strong> {{ $entry->emotion }}</p>
+            <p class="fst-italic">"{{ $entry->comment }}"</p>
         </div>
-
-        <!-- Entrada 2 -->
-        <div class="entry">
-            <h3>2024-03-21</h3>
-            <p><strong>Nivel de Estrés:</strong> Medio</p>
-            <p><strong>Emoción:</strong> Ansioso</p>
-            <p class="fst-italic">"Examen próximo"</p>
-        </div>
-
-        <!-- Entrada 3 -->
-        <div class="entry">
-            <h3>2024-03-20</h3>
-            <p><strong>Nivel de Estrés:</strong> Alto</p>
-            <p><strong>Emoción:</strong> Estresado</p>
-            <p class="fst-italic">"Fecha límite del proyecto"</p>
-        </div>
+        @endforeach
     </div>
 </main>
 @endsection

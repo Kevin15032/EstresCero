@@ -13,10 +13,16 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'avatar'
     ];
 
     protected $hidden = [
         'password',
         'remember_token',
     ];
+
+    public function emotionalEntries()
+    {
+        return $this->hasMany(EmotionalEntry::class);
+    }
 }
