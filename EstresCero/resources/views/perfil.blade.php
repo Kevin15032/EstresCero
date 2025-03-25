@@ -11,79 +11,101 @@
         padding: 20px;
         margin-bottom: 20px;
     }
-    .profile-img {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 3px solid #457B9D;
-    }
     .form-control:focus {
         border-color: #457B9D;
         box-shadow: 0 0 0 0.2rem rgba(69, 123, 157, 0.25);
+    }
+    .edit-form {
+        display: none;
+    }
+    .profile-info {
+        padding: 20px;
+    }
+    .profile-info p {
+        margin-bottom: 10px;
+        font-size: 1.1em;
+    }
+    .profile-label {
+        font-weight: bold;
+        color: #457B9D;
     }
 </style>
 @endsection
 
 @section('contenido')
 <main class="container py-4">
-    <div class="row">
-        <!-- Información del Perfil -->
-        <div class="col-md-4">
-            <div class="profile-section text-center">
-                <img src="{{ asset('img/man-4994636_1280.jpg') }}" alt="Foto de perfil" class="profile-img mb-3">
-                <h4>Nombre del Usuario</h4>
-                <p class="text-muted">Estudiante</p>
-                <button class="btn btn-custom btn-sm" data-bs-toggle="modal" data-bs-target="#editPhotoModal">
-                    <i class="fas fa-camera"></i> Cambiar foto
-                </button>
-            </div>
-        </div>
-
-        <!-- Formulario de Edición -->
+    <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="profile-section">
-                <h3 class="mb-4">Editar Perfil</h3>
-                <form id="profileForm">
-                    @csrf
-                    <div class="mb-3">
-                        <label for="name" class="form-label">Nombre Completo</label>
-                        <input type="text" class="form-control" id="name" name="name" value="Nombre del Usuario">
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Correo Electrónico</label>
-                        <input type="email" class="form-control" id="email" name="email" value="usuario@gmail.com">
-                    </div>
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Nueva Contraseña</label>
-                        <input type="password" class="form-control" id="password" name="password" placeholder="Dejar en blanco para mantener la actual">
-                    </div>
-                    <button type="submit" class="btn btn-custom">Guardar Cambios</button>
-                </form>
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h3>Mi Perfil</h3>
+                    <button class="btn btn-primary" onclick="toggleEditForm()">
+                        <i class="fas fa-edit"></i> Editar Perfil
+                    </button>
+                </div>
+
+                <!-- Información estática -->
+                <div class="profile-info" id="profileInfo">
+                    <p><span class="profile-label">Nombre:</span> {{ $user->name }}</p>
+                    <p><span class="profile-label">Correo:</span> {{ $user->email }}</p>
+                </div>
+
+                <!-- Formulario de edición (oculto por defecto) -->
+                <div class="edit-form" id="editForm">
+                    <form action="{{ route('perfil.update') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Nombre Completo</label>
+                            <input type="text" class="form-control" id="name" name="name" 
+                                   value="{{ old('name', $user->name) }}" required>
+                            @error('name')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="email" name="email" 
+                                   value="{{ old('email', $user->email) }}" required>
+                            @error('email')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Nueva Contraseña</label>
+                            <input type="password" class="form-control" id="password" name="password" 
+                                   placeholder="Dejar en blanco para mantener la actual">
+                            @error('password')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                            <button type="button" class="btn btn-secondary" onclick="toggleEditForm()">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </main>
+@endsection
 
-<!-- Modal para cambiar foto -->
-<div class="modal fade" id="editPhotoModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Cambiar Foto de Perfil</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <form id="photoForm" enctype="multipart/form-data">
-                    @csrf
-                    <input type="file" class="form-control" id="photoInput" name="photo" accept="image/*">
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-custom">Guardar</button>
-            </div>
-        </div>
-    </div>
-</div>
+@section('scripts')
+<script>
+function toggleEditForm() {
+    const profileInfo = document.getElementById('profileInfo');
+    const editForm = document.getElementById('editForm');
+    
+    if (editForm.style.display === 'none' || editForm.style.display === '') {
+        profileInfo.style.display = 'none';
+        editForm.style.display = 'block';
+    } else {
+        profileInfo.style.display = 'block';
+        editForm.style.display = 'none';
+    }
+}
+</script>
 @endsection

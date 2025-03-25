@@ -24,7 +24,7 @@ class AuthController extends Controller
         ]);
 
         Auth::login($user);
-        return redirect('/dashboard')->with('success', '¡Registro exitoso!');
+        return redirect('/dashboard')->with('success', '¡Cuenta creada exitosamente! Bienvenido a Estrés Cero.');
     }
 
     public function login(Request $request)
@@ -36,11 +36,11 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            return redirect()->intended('/dashboard');
+            return redirect()->intended('/dashboard')->with('success', '¡Bienvenido de vuelta! Has iniciado sesión correctamente.');
         }
 
         return back()->withErrors([
-            'email' => 'Las credenciales proporcionadas no coinciden.',
+            'email' => 'Las credenciales proporcionadas no coinciden con nuestros registros.',
         ]);
     }
 
@@ -49,6 +49,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/');
+        return redirect('/')->with('success', '¡Has cerrado sesión correctamente!');
     }
 }

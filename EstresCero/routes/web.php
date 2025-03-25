@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\PaginasController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
 // Rutas principales
@@ -21,7 +22,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/ejercicios', [PaginasController::class, 'ejercicios'])->name('ejercicios');
     Route::get('/seguimiento', [PaginasController::class, 'seguimiento'])->name('seguimiento');
     Route::get('/foro', [PaginasController::class, 'foro'])->name('foro');
-    Route::get('/perfil', [PaginasController::class, 'perfil'])->name('perfil');
+    Route::get('/perfil', [ProfileController::class, 'index'])->name('perfil');
+    Route::post('/perfil/update', [ProfileController::class, 'update'])->name('perfil.update');
 });
 
 

@@ -6,6 +6,7 @@
     <title>@yield('titulo') - Estrés Cero</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         body { background-color: #E0F7FA; }
         .custom-bg { background-color: #1D3557; }
@@ -15,6 +16,10 @@
             transition: color 0.3s ease;
         }
         .nav-link:hover { color: #E0F7FA !important; }
+        .nav-link.text-warning {
+            color: #ffc107 !important;
+            font-weight: bold;
+        }
         .feature-card {
             transition: transform 0.3s ease;
             background-color: white;
@@ -52,17 +57,42 @@
                 </a>
             </h1>
             <nav>
-                <a class="nav-link d-inline px-3" href="{{ route('dashboard') }}">Inicio</a>
-                <a class="nav-link d-inline px-3" href="{{ route('recursos') }}">Recursos</a>
-                <a class="nav-link d-inline px-3" href="{{ route('ejercicios') }}">Ejercicios</a>
-                <a class="nav-link d-inline px-3" href="{{ route('seguimiento') }}">Seguimiento Emocional</a>
-                <a class="nav-link d-inline px-3" href="{{ route('foro') }}">Foro</a>
-                <a class="nav-link d-inline px-3" href="{{ route('perfil') }}">Mi Perfil</a>
+                <a class="nav-link d-inline px-3 {{ Route::is('dashboard') ? 'text-warning' : '' }}" 
+                   href="{{ route('dashboard') }}">Inicio</a>
+                
+                <a class="nav-link d-inline px-3 {{ Route::is('recursos') ? 'text-warning' : '' }}" 
+                   href="{{ route('recursos') }}">Recursos</a>
+                
+                <a class="nav-link d-inline px-3 {{ Route::is('ejercicios') ? 'text-warning' : '' }}" 
+                   href="{{ route('ejercicios') }}">Ejercicios</a>
+                
+                <a class="nav-link d-inline px-3 {{ Route::is('seguimiento') ? 'text-warning' : '' }}" 
+                   href="{{ route('seguimiento') }}">Seguimiento Emocional</a>
+                
+                <a class="nav-link d-inline px-3 {{ Route::is('foro') ? 'text-warning' : '' }}" 
+                   href="{{ route('foro') }}">Foro</a>
+                
+                <a class="nav-link d-inline px-3 {{ Route::is('perfil') ? 'text-warning' : '' }}" 
+                   href="{{ route('perfil') }}">Mi Perfil</a>
             </nav>
         </div>
     </header>
 
     @yield('contenido')
+
+    @if(session('success'))
+        <script>
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '{{ session('success') }}',
+                timer: 3000,
+                showConfirmButton: false,
+                position: 'top-end',
+                toast: true
+            });
+        </script>
+    @endif
 
     <footer class="footer">
         <p>&copy; {{ date('Y') }} Estrés Cero - Tu compañero en el bienestar estudiantil</p>

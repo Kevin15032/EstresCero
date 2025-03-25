@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+
 class PaginasController extends Controller
 {
     public function index()
@@ -43,9 +47,10 @@ class PaginasController extends Controller
     {
         return view('foro');
     }
-
     public function perfil()
     {
         return view('perfil');
     }
+
+    
 }
