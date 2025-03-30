@@ -13,6 +13,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'is_admin',
+        'is_active',
         'avatar'
     ];
 
@@ -21,6 +23,18 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'is_admin' => 'boolean',
+        'is_active' => 'boolean'
+    ];
+
+    public function isAdmin()
+    {
+        return $this->is_admin === true;
+    }
+
+    // Agregar esta relación
     public function emotionalEntries()
     {
         return $this->hasMany(EmotionalEntry::class);

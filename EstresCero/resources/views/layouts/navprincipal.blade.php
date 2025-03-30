@@ -60,8 +60,8 @@
                 <a class="nav-link d-inline px-3 {{ Route::is('dashboard') ? 'text-warning' : '' }}" 
                    href="{{ route('dashboard') }}">Inicio</a>
                 
-                <a class="nav-link d-inline px-3 {{ Route::is('recursos') ? 'text-warning' : '' }}" 
-                   href="{{ route('recursos') }}">Recursos</a>
+                <a class="nav-link d-inline px-3 {{ Route::is('recursos.index') ? 'text-warning' : '' }}" 
+                   href="{{ route('recursos.index') }}">Recursos</a>
                 
                 <a class="nav-link d-inline px-3 {{ Route::is('ejercicios') ? 'text-warning' : '' }}" 
                    href="{{ route('ejercicios') }}">Ejercicios</a>

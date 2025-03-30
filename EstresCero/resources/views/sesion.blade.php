@@ -50,7 +50,18 @@
 <div class="container mt-5">
     <div class="form-container">
         <h2 class="header-title text-center mb-4">Iniciar Sesión</h2>
-        <form method="POST" action="{{ route('sesion.post') }}">
+        
+        @if($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <form method="POST" action="{{ route('auth.login') }}">
             @csrf
             <!-- Correo -->
             <div class="form-group mb-3">

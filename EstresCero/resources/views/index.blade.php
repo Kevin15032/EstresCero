@@ -71,6 +71,32 @@
         font-size: 1.2rem;
         text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
     }
+
+    .custom-btn-outline {
+        color: white;
+        border: 2px solid white;
+        background: transparent;
+        transition: all 0.3s ease;
+    }
+
+    .custom-btn-outline:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .custom-btn-solid {
+        background-color: white;
+        color: #1D3557;
+        border: none;
+        transition: all 0.3s ease;
+    }
+
+    .custom-btn-solid:hover {
+        background-color: #f8f9fa;
+        transform: translateY(-2px);
+        color: #1D3557;
+    }
 </style>
 @endsection
 
@@ -85,8 +111,8 @@
             </h1>
         </div>
         <nav>
-            <a class="btn btn-outline-light me-2" href="{{ route('sesion') }}">Iniciar Sesión</a>
-            <a class="btn btn-light" href="{{ route('registro') }}">Registrarse</a>
+            <a href="{{ route('login') }}" class="btn custom-btn-outline me-2">Iniciar Sesión</a>
+            <a href="{{ route('registro') }}" class="btn custom-btn-solid">Registrarse</a>
         </nav>
     </div>
 </header>

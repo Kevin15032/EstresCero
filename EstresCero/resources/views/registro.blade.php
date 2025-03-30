@@ -50,7 +50,7 @@
 <div class="container mt-5">
     <div class="form-container">
         <h2 class="header-title text-center mb-4">Registro</h2>
-        <form method="POST" action="{{ route('registro.post') }}">
+        <form method="POST" action="{{ route('auth.register') }}">
             @csrf
             <div class="form-group mb-3">
                 <label for="name">Nombre</label>
@@ -83,7 +83,7 @@
         </form>
 
         <div class="mt-3 text-center">
-            <p>¿Ya tienes una cuenta? <a href="{{ route('sesion') }}">Inicia Sesión</a></p>
+            <p>¿Ya tienes una cuenta? <a href="{{ route('login') }}">Inicia Sesión</a></p>
         </div>
     </div>
 </div>

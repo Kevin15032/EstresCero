@@ -23,11 +23,6 @@ class PaginasController extends Controller
         return view('registro');
     }
 
-    public function dashboard()
-    {
-        return view('dashboard');
-    }
-
     public function recursos()
     {
         return view('recursos');
