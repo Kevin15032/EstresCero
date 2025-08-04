@@ -6,23 +6,31 @@
 <style>
     .table-custom {
         background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        overflow: hidden;
     }
     .table-custom th {
         background-color: #1D3557;
         color: white;
         border: none;
+        text-align: center;
+        vertical-align: middle;
+    }
+    .table-custom td {
+        vertical-align: middle;
+        text-align: center;
     }
     .user-avatar {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 50%;
         object-fit: cover;
+        border: 2px solid #ccc;
     }
     .status-badge {
-        padding: 5px 10px;
-        border-radius: 15px;
+        padding: 5px 12px;
+        border-radius: 20px;
         font-size: 0.85em;
     }
     .status-active {
@@ -36,6 +44,10 @@
     .search-box {
         max-width: 300px;
     }
+    .btn-icon {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
 </style>
 @endsection
 
@@ -43,21 +55,19 @@
 <div class="container-fluid">
     <div class="row mb-4">
         <div class="col">
-            <div class="card">
+            <div class="card border-0 shadow">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">Lista de Usuarios</h5>
-                        <div class="d-flex gap-2">
-                            <form action="{{ route('admin.users.search') }}" method="GET" class="d-flex gap-2">
-                                <input type="text" name="search" class="form-control search-box" 
-                                       placeholder="Buscar usuario..." value="{{ request('search') }}">
-                                <button type="submit" class="btn btn-custom">
-                                    <i class="fas fa-search"></i>
-                                </button>
-                            </form>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="mb-0 text-primary"><i class="fas fa-users me-2"></i>Lista de Usuarios</h4>
+                        <form action="{{ route('admin.users.search') }}" method="GET" class="d-flex">
+                            <input type="text" name="search" class="form-control search-box me-2" 
+                                   placeholder="Buscar usuario..." value="{{ request('search') }}">
+                            <button type="submit" class="btn btn-custom">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </form>
                     </div>
-                    
+
                     @if(session('success'))
                         <div class="alert alert-success">
                             {{ session('success') }}
@@ -80,24 +90,25 @@
                                 @forelse($users as $user)
                                 <tr>
                                     <td>
-                                        @if($user->avatar)
-                                            <img src="{{ asset('storage/' . $user->avatar) }}" 
-                                                 alt="{{ $user->name }}" class="user-avatar">
-                                        @else
-                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random" 
-                                                 alt="{{ $user->name }}" class="user-avatar">
-                                        @endif
+                                        <img src="{{ $user->avatar 
+                                            ? asset('storage/' . $user->avatar) 
+                                            : 'https://ui-avatars.com/api/?name=' . urlencode($user->name) . '&background=random' }}" 
+                                            alt="{{ $user->name }}" class="user-avatar">
                                     </td>
                                     <td>{{ $user->name }}</td>
                                     <td>{{ $user->email }}</td>
-                                    <td>{{ $user->is_admin ? 'Administrador' : 'Usuario' }}</td>
+                                    <td>
+                                        <span class="badge bg-{{ $user->is_admin ? 'info' : 'secondary' }}">
+                                            {{ $user->is_admin ? 'Administrador' : 'Usuario' }}
+                                        </span>
+                                    </td>
                                     <td>
                                         <span class="status-badge {{ $user->is_active ? 'status-active' : 'status-inactive' }}">
                                             {{ $user->is_active ? 'Activo' : 'Inactivo' }}
                                         </span>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary" 
+                                        <button class="btn btn-sm btn-primary btn-icon" 
                                                 onclick="editUser({{ $user->id }})">
                                             <i class="fas fa-edit"></i>
                                         </button>
@@ -105,7 +116,7 @@
                                               method="POST" class="d-inline">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit" class="btn btn-sm {{ $user->is_active ? 'btn-warning' : 'btn-success' }}">
+                                            <button type="submit" class="btn btn-sm btn-icon {{ $user->is_active ? 'btn-warning' : 'btn-success' }}">
                                                 <i class="fas {{ $user->is_active ? 'fa-ban' : 'fa-check' }}"></i>
                                             </button>
                                         </form>
@@ -113,7 +124,7 @@
                                 </tr>
                                 @empty
                                 <tr>
-                                    <td colspan="6" class="text-center">No se encontraron usuarios</td>
+                                    <td colspan="6" class="text-center text-muted">No se encontraron usuarios</td>
                                 </tr>
                                 @endforelse
                             </tbody>
@@ -129,13 +140,13 @@
     </div>
 </div>
 
-<!-- Modal para editar usuario -->
+<!-- Modal -->
 <div class="modal fade" id="editUserModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Editar Usuario</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="editUserForm" method="POST">
                 @csrf
@@ -157,7 +168,7 @@
                         </select>
                     </div>
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer bg-light">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar Cambios</button>
                 </div>

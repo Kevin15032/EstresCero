@@ -1,6 +1,6 @@
 @extends('layouts.PlantillaNavinicio')
 
-@section('titulo', 'Registro')
+@section('titulo', 'Restablecer Contraseña')
 
 @section('estilos')
 <style>
@@ -51,18 +51,8 @@
         background-color: #1D7F6B;
     }
 
-    .text-muted a {
-        color: #1D3557;
-        text-decoration: none;
-    }
-
-    .text-muted a:hover {
-        text-decoration: underline;
-        color: #1a2b44;
-    }
-
-    .alert-danger {
-        font-size: 0.9rem;
+    .text-danger {
+        font-size: 0.85rem;
     }
 </style>
 @endsection
@@ -70,50 +60,39 @@
 @section('contenido')
 <div class="container">
     <div class="form-container">
-        <h2 class="header-title text-center mb-4">Registro</h2>
+        <h2 class="header-title text-center mb-4">Restablecer Contraseña</h2>
 
-        <form method="POST" action="{{ route('auth.register') }}">
+        <form method="POST" action="{{ route('password.update') }}">
             @csrf
+            <input type="hidden" name="token" value="{{ $token }}">
 
-            <!-- Nombre -->
-            <div class="form-group mb-3">
-                <label for="name">Nombre</label>
-                <input type="text" id="name" name="name" class="form-control"
-                       value="{{ old('name') }}" placeholder="Tu nombre completo" required>
-                @error('name')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
-            </div>
-
-            <!-- Email -->
             <div class="form-group mb-3">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" class="form-control"
-                       value="{{ old('email') }}" placeholder="ejemplo@correo.com" required>
+                <input id="email" type="email" name="email" value="{{ $email ?? old('email') }}"
+                       class="form-control" placeholder="ejemplo@correo.com" required>
                 @error('email')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
 
-            <!-- Contraseña -->
             <div class="form-group mb-3">
-                <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" class="form-control"
-                       placeholder="Crea una contraseña segura" required>
+                <label for="password">Nueva Contraseña</label>
+                <input id="password" type="password" name="password" class="form-control" required>
                 @error('password')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary w-100">Registrarse</button>
-        </form>
+            <div class="form-group mb-3">
+                <label for="password_confirmation">Confirmar Contraseña</label>
+                <input id="password_confirmation" type="password" name="password_confirmation" class="form-control" required>
+                @error('password_confirmation')
+                    <small class="text-danger">{{ $message }}</small>
+                @enderror
+            </div>
 
-        <div class="mt-4 text-center">
-            <p class="text-muted">
-                ¿Ya tienes una cuenta?
-                <a href="{{ route('login') }}">Inicia Sesión</a>
-            </p>
-        </div>
+            <button type="submit" class="btn btn-primary w-100">Restablecer Contraseña</button>
+        </form>
     </div>
 </div>
 @endsection

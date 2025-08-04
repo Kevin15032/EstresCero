@@ -30,10 +30,10 @@
     .profile-info img:hover {
         transform: scale(1.05);
     }
-    .btn-danger {
+    .btn-danger, .btn-warning {
         transition: all 0.3s ease;
     }
-    .btn-danger:hover {
+    .btn-danger:hover, .btn-warning:hover {
         transform: translateY(-2px);
     }
 </style>
@@ -70,7 +70,7 @@
                         </div>
                     </div>
 
-                    <div class="row mb-3">
+                    <div class="row mb-4">
                         <div class="col-md-6">
                             <p><span class="profile-label">Rol:</span> Administrador</p>
                         </div>
@@ -81,8 +81,11 @@
                         </div>
                     </div>
 
-                    <!-- Botón de cerrar sesión -->
-                    <div class="text-center mt-4">
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-center gap-3 mt-4">
+                        <a href="{{ route('admin.perfil.edit') }}" class="btn btn-warning">
+                            <i class="fas fa-user-edit"></i> Editar Perfil
+                        </a>
                         <form action="{{ route('logout') }}" method="POST" class="d-inline">
                             @csrf
                             <button type="submit" class="btn btn-danger">
@@ -90,9 +93,11 @@
                             </button>
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+

@@ -4,53 +4,74 @@
 
 @section('estilos')
 <style>
+    body {
+        background-color: #E0F7FA;
+        font-family: 'Poppins', sans-serif;
+    }
+
     .form-container {
         background-color: #FFFFFF;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 400px;
-        margin: auto;
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+        max-width: 420px;
+        margin: 3rem auto;
     }
+
     .header-title {
         color: #1D3557;
+        font-weight: 600;
+        font-size: 1.8rem;
     }
-    .btn-primary {
-        background-color: #457B9D;
-        color: #FFFFFF;
-    }
-    .btn-primary:hover {
-        background-color: #1D3557;
-    }
-    .btn-secondary {
-        background-color: #A8DADC;
-        color: #1D3557;
-    }
-    .btn-secondary:hover {
-        background-color: #1D3557;
-        color: #FFFFFF;
-    }
+
     .form-group label {
         color: #1D3557;
+        font-weight: 500;
     }
-    .form-group input,
-    .form-group select {
-        border-color: #457B9D;
-        box-shadow: none;
+
+    .form-control {
+        border: 1.8px solid #A8DADC;
+        border-radius: 6px;
+        font-size: 0.95rem;
     }
-    .form-group input:focus,
-    .form-group select:focus {
+
+    .form-control:focus {
         border-color: #1D3557;
-        box-shadow: 0 0 5px #1D3557;
+        box-shadow: 0 0 5px rgba(29, 53, 87, 0.5);
+    }
+
+    .btn-primary {
+        background-color: #2CA58D;
+        border: none;
+        font-weight: 500;
+        transition: all 0.2s ease-in-out;
+    }
+
+    .btn-primary:hover {
+        background-color: #1D7F6B;
+    }
+
+    .text-muted a {
+        color: #1D3557;
+        text-decoration: none;
+    }
+
+    .text-muted a:hover {
+        text-decoration: underline;
+        color: #1a2b44;
+    }
+
+    .alert-danger {
+        font-size: 0.9rem;
     }
 </style>
 @endsection
 
 @section('contenido')
-<div class="container mt-5">
+<div class="container">
     <div class="form-container">
         <h2 class="header-title text-center mb-4">Iniciar Sesión</h2>
-        
+
         @if($errors->any())
             <div class="alert alert-danger">
                 <ul class="mb-0">
@@ -63,40 +84,38 @@
 
         <form method="POST" action="{{ route('auth.login') }}">
             @csrf
+
             <!-- Correo -->
             <div class="form-group mb-3">
                 <label for="email">Correo Electrónico</label>
-                <input type="email" id="email" name="email" class="form-control" 
-                       placeholder="Correo Electrónico" value="{{ old('email') }}" required>
+                <input type="email" id="email" name="email" class="form-control"
+                    placeholder="ejemplo@correo.com" value="{{ old('email') }}" required>
                 @error('email')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
+
             <!-- Contraseña -->
             <div class="form-group mb-3">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" 
-                       class="form-control" placeholder="Contraseña" required>
+                <input type="password" id="password" name="password" class="form-control"
+                    placeholder="••••••••" required>
                 @error('password')
                     <small class="text-danger">{{ $message }}</small>
                 @enderror
             </div>
-            
+
             <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
         </form>
 
-        <div class="mt-3 text-center">
-            <p><a href="" class="text-muted">¿Olvidaste tu contraseña?</a></p>
-            <p><a href="{{ route('registro') }}" class="text-muted">¿No tienes una cuenta? Regístrate</a></p>
-        </div>
-
         <div class="mt-4 text-center">
-            <button class="btn btn-secondary">
-                <i class="fab fa-google me-2"></i> Google
-            </button>
-            <button class="btn btn-secondary mt-2">
-                <i class="fab fa-facebook me-2"></i> Facebook
-            </button>
+            <p class="text-muted mb-2">
+                <a href="{{ route('password.request') }}">¿Olvidaste tu contraseña?</a>
+            </p>
+            <p class="text-muted">
+                ¿No tienes una cuenta?
+                <a href="{{ route('registro') }}">Regístrate aquí</a>
+            </p>
         </div>
     </div>
 </div>

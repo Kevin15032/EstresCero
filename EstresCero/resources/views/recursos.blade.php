@@ -4,215 +4,198 @@
 
 @section('estilos')
 <style>
+    .btn-category {
+        background-color: #A8DADC;
+        color: #1D3557;
+        border-radius: 20px;
+        border: none;
+        padding: 8px 16px;
+        margin: 0 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-category.active,
+    .btn-category:hover {
+        background-color: #1D3557;
+        color: white;
+    }
+
     .resource-card {
         transition: transform 0.3s ease;
-        height: 400px; /* Altura fija para todas las tarjetas */
+        height: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         display: flex;
         flex-direction: column;
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
     }
+
     .resource-card:hover {
         transform: translateY(-5px);
     }
-    .resource-card .card-img-top {
-        height: 200px; /* Altura fija para todas las imágenes */
-        object-fit: cover; /* Mantiene la proporción de la imagen */
+
+    .resource-card img {
+        height: 200px;
+        object-fit: cover;
+        width: 100%;
     }
+
     .resource-card .card-body {
         flex: 1;
-        overflow: hidden; /* Evita que el contenido se desborde */
+        padding: 16px;
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
     }
-    .resource-card .card-text {
+
+    .card-title {
+        font-weight: 600;
+        font-size: 1.1rem;
+        color: #1D3557;
+    }
+
+    .card-text {
+        color: #555;
+        font-size: 0.95rem;
         flex-grow: 1;
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 3; /* Límite de 3 líneas de texto */
-        -webkit-box-orient: vertical;
+        margin: 10px 0;
     }
-    .category-filter {
+
+    .btn-custom {
         background-color: #457B9D;
         color: white;
-        border: none;
-        border-radius: 20px;
-        padding: 8px 16px;
-        margin: 5px;
-        cursor: pointer;
+        border-radius: 30px;
+        width: 100%;
+        transition: 0.3s ease;
     }
-    .category-filter:hover {
+
+    .btn-custom:hover {
         background-color: #1D3557;
     }
-    .favorite-btn {
-        color: #457B9D;
-        cursor: pointer;
+
+    .category-badge {
+        font-size: 0.75rem;
+        font-weight: 600;
+        background-color: #1D3557;
+        color: white;
+        padding: 5px 10px;
+        border-radius: 12px;
     }
-    .favorite-btn:hover {
-        color: #e31b23;
-    }
-    /* Estilos para el modal */
-    .modal-body img {
-        max-width: 100%;
-        height: auto;
-        max-height: 400px; /* Altura máxima para imágenes en el modal */
-        display: block;
-        margin: 0 auto;
-    }
-    .modal-body {
-        max-height: 70vh; /* Altura máxima del modal */
-        overflow-y: auto; /* Permite scroll si el contenido es muy largo */
-    }
-    .modal-content {
-        border: none;
-        border-radius: 15px;
-    }
-    .article-header {
-        position: relative;
-        margin-bottom: 2rem;
-    }
-    .article-header img {
-        width: 100%;
-        height: 300px;
-        object-fit: cover;
-        border-radius: 10px;
-    }
-    .article-title {
-        font-size: 2rem;
-        color: #1D3557;
-        margin: 1.5rem 0;
-        font-weight: bold;
-    }
-    .article-metadata {
-        color: #666;
-        font-size: 0.9rem;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 1px solid #eee;
-    }
-    .article-content {
-        font-size: 1.1rem;
-        line-height: 1.8;
-        color: #333;
-        padding: 0 1rem;
-    }
-    .article-content p {
-        margin-bottom: 1.5rem;
+
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
     }
 </style>
 @endsection
 
 @section('contenido')
 <main class="container py-4">
-    <!-- Categorías y Filtros -->
+
+    <!-- Filtros -->
     <div class="text-center mb-4">
-        <div class="btn-group" role="group">
-            <button class="btn btn-custom active">Todos</button>
-            <button class="btn btn-custom">Artículos</button>
-            <button class="btn btn-custom">Guías</button>
-            <button class="btn btn-custom">Tips</button>
-        </div>
+        <button class="btn btn-category active" data-category="Todos">Todos</button>
+        <button class="btn btn-category" data-category="Artículo">Artículos</button>
+        <button class="btn btn-category" data-category="Guía">Guías</button>
+        <button class="btn btn-category" data-category="Tip">Tips</button>
     </div>
 
-    <!-- Grid de Recursos -->
-    <div class="row g-4">
-        @forelse($recursos as $recurso)
-        <div class="col-md-4">
-            <div class="card h-100 resource-card">
+    <!-- Grid -->
+    <div class="row g-4" id="resource-list">
+        @forelse($recursos as $index => $recurso)
+        <div class="col-md-4 recurso-item" data-category="{{ $recurso->categoria }}">
+            <div class="card resource-card" style="animation-delay: {{ $index * 0.1 }}s;">
                 @if($recurso->imagen)
-                    <img src="{{ asset('storage/' . $recurso->imagen) }}" 
-                         class="card-img-top" alt="{{ $recurso->titulo }}">
-                @else
-                    <div class="text-center pt-4">
-                        <i class="fas fa-book-reader text-primary" style="font-size: 2.5rem;"></i>
-                    </div>
+                <img src="{{ asset('storage/' . $recurso->imagen) }}" alt="{{ $recurso->titulo }}">
                 @endif
                 <div class="card-body">
-                    <div class="d-flex justify-content-between">
-                        <span class="badge bg-primary mb-2">Recurso</span>
-                        <i class="fas fa-heart favorite-btn"></i>
-                    </div>
+                    <span class="category-badge mb-2">{{ $recurso->categoria }}</span>
                     <h5 class="card-title">{{ $recurso->titulo }}</h5>
                     <p class="card-text">{{ Str::limit($recurso->descripcion, 100) }}</p>
-                    <button class="btn btn-custom" data-bs-toggle="modal" 
-                            data-bs-target="#resourceModal" 
-                            onclick="showResource({{ $recurso->id }})">
+                    <button class="btn btn-custom" data-bs-toggle="modal" data-bs-target="#resourceModal" onclick="showResource({{ $recurso->id }})">
                         Leer más
                     </button>
                 </div>
             </div>
         </div>
         @empty
-        <div class="col-12">
-            <p class="text-center">No hay recursos disponibles.</p>
+        <div class="col-12 text-center">
+            <p>No hay recursos disponibles.</p>
         </div>
         @endforelse
     </div>
-</main>
 
-<!-- Modal para recursos -->
-<div class="modal fade" id="resourceModal" tabindex="-1">
-    <div class="modal-dialog modal-xl"> <!-- Cambiado a modal-xl para más espacio -->
-        <div class="modal-content">
-            <div class="modal-header border-0">
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <article class="article-container">
-                    <div class="article-header">
-                        <img id="resourceImage" src="" alt="" class="mb-3">
-                    </div>
-                    <h1 class="article-title" id="resourceTitle"></h1>
-                    <div class="article-metadata">
-                        <span class="category" id="resourceCategory">
-                            <i class="fas fa-folder-open me-2"></i>
-                            <span id="resourceCategoryText"></span>
-                        </span>
-                        <span class="mx-2">•</span>
-                        <span class="date">
-                            <i class="fas fa-calendar-alt me-2"></i>
-                            <span id="resourceDate"></span>
-                        </span>
-                    </div>
-                    <div class="article-content" id="resourceContent">
-                    </div>
-                </article>
+    <!-- Modal -->
+    <div class="modal fade" id="resourceModal" tabindex="-1">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <img id="resourceImage" src="" alt="" class="img-fluid rounded mb-4 shadow">
+                    <h3 id="resourceTitle" class="text-primary fw-bold mb-3"></h3>
+                    <p class="text-muted mb-2" id="resourceDate"></p>
+                    <div id="resourceContent" class="text-dark fs-6 lh-lg"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
+</main>
 @endsection
 
 @section('scripts')
 <script>
 function showResource(id) {
     fetch(`/recursos/${id}`)
-        .then(response => response.json())
+        .then(res => res.json())
         .then(data => {
-            // Actualizar imagen
-            const imageElement = document.getElementById('resourceImage');
-            imageElement.src = data.imagen ? `/storage/${data.imagen}` : '/images/default-resource.jpg';
-            imageElement.alt = data.titulo;
-
-            // Actualizar título
+            document.getElementById('resourceImage').src = data.imagen ? `/storage/${data.imagen}` : '/images/default.jpg';
             document.getElementById('resourceTitle').textContent = data.titulo;
-            
-            // Actualizar categoría
-            document.getElementById('resourceCategoryText').textContent = 'Recurso';
-            
-            // Actualizar fecha
-            const fecha = new Date(data.created_at).toLocaleDateString('es-ES', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
-            });
-            document.getElementById('resourceDate').textContent = fecha;
-            
-            // Actualizar contenido
+            document.getElementById('resourceDate').textContent = new Date(data.created_at).toLocaleDateString('es-ES');
             document.getElementById('resourceContent').innerHTML = `
-                <div class="lead mb-4">${data.descripcion}</div>
-                ${data.contenido}
+                <p class="lead">${data.descripcion}</p>
+                <hr>
+                <div>${data.contenido.replace(/\n/g, '<br>')}</div>
             `;
         });
 }
+
+// Ocultar con fade
+function fadeOut(el) {
+    el.style.opacity = 1;
+    el.style.transition = "opacity 0.3s ease";
+    el.style.opacity = 0;
+    setTimeout(() => el.style.display = "none", 300);
+}
+
+// Mostrar con fade
+function fadeIn(el) {
+    el.style.display = "block";
+    el.style.opacity = 0;
+    el.style.transition = "opacity 0.3s ease";
+    setTimeout(() => el.style.opacity = 1, 10);
+}
+
+// Filtro
+document.querySelectorAll('.btn-category').forEach(btn => {
+    btn.addEventListener('click', () => {
+        document.querySelectorAll('.btn-category').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const selected = btn.dataset.category;
+        document.querySelectorAll('.recurso-item').forEach(card => {
+            const cat = card.dataset.category;
+            if (selected === 'Todos' || cat === selected) {
+                fadeIn(card);
+            } else {
+                fadeOut(card);
+            }
+        });
+    });
+});
 </script>
 @endsection

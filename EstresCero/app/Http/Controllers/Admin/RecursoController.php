@@ -36,12 +36,48 @@ class RecursoController extends Controller
             ->with('success', 'Recurso creado correctamente');
     }
 
+    public function show($id)
+    {
+        $recurso = Recurso::findOrFail($id);
+        return response()->json($recurso);
+    }
+
+    public function update(Request $request, $id)
+{
+    $recurso = Recurso::findOrFail($id);
+
+    $request->validate([
+        'titulo' => 'required|string|max:255',
+        'descripcion' => 'required|string',
+        'contenido' => 'required|string',
+        'categoria' => 'required|string',
+        'imagen' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
+    ]);
+
+    $recurso->titulo = $request->titulo;
+    $recurso->descripcion = $request->descripcion;
+    $recurso->contenido = $request->contenido;
+    $recurso->categoria = $request->categoria; 
+
+    if ($request->hasFile('imagen')) {
+        if ($recurso->imagen) {
+            Storage::disk('public')->delete($recurso->imagen);
+        }
+        $recurso->imagen = $request->file('imagen')->store('recursos', 'public');
+    }
+
+    $recurso->save();
+
+    return redirect()->route('admin.recursos.index')->with('success', 'Recurso actualizado correctamente.');
+}
+
+
     public function destroy(Recurso $recurso)
     {
         if ($recurso->imagen) {
             Storage::disk('public')->delete($recurso->imagen);
         }
-        
+
         $recurso->delete();
 
         return redirect()->route('admin.recursos.index')

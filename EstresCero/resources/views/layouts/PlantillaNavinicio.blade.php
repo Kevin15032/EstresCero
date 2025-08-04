@@ -3,34 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('titulo') - Estrés Cero</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { 
-            background-color: #E0F7FA; 
+        body {
+            background-color: #E0F7FA;
+            font-family: 'Poppins', sans-serif;
         }
-        .custom-bg { 
-            background-color: #1D3557; 
+
+        .custom-bg {
+            background-color: #1D3557;
         }
+
         .custom-btn-outline {
             color: white;
             border: 2px solid white;
             background: transparent;
             transition: all 0.3s ease;
         }
+
         .custom-btn-outline:hover {
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
             transform: translateY(-2px);
         }
+
         .custom-btn-solid {
             background-color: white;
             color: #1D3557;
             border: none;
             transition: all 0.3s ease;
         }
+
         .custom-btn-solid:hover {
             background-color: #f8f9fa;
             transform: translateY(-2px);
@@ -39,11 +45,12 @@
     </style>
     @yield('estilos')
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
+
     <header class="custom-bg text-white py-3">
         <div class="container d-flex align-items-center justify-content-between">
             <div class="d-flex align-items-center">
-                <h1>
+                <h1 class="fs-4 mb-0">
                     <a href="{{ route('home') }}" class="text-white text-decoration-none">
                         <i class="fas fa-brain"></i> Estrés Cero
                     </a>
@@ -67,9 +74,11 @@
         </div>
     </header>
 
-    @yield('contenido')
+    <main class="flex-grow-1">
+        @yield('contenido')
+    </main>
 
-    <footer class="custom-bg text-white text-center py-3 mt-4">
+    <footer class="custom-bg text-white text-center py-3 mt-auto">
         <p>&copy; {{ date('Y') }} Estrés Cero - Tu compañero en el bienestar estudiantil</p>
     </footer>
 

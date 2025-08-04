@@ -28,13 +28,12 @@ class AuthController extends Controller
 
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
-            
+
             if (auth()->user()->isAdmin()) {
-                return redirect()->route('admin.dashboard')
-                               ->with('success', '¡Bienvenido administrador!');
+                return redirect()->route('admin.dashboard')->with('success', '¡Bienvenido administrador!');
             }
-            return redirect()->route('dashboard')
-                           ->with('success', '¡Bienvenido a Estrés Cero!');
+
+            return redirect()->route('dashboard')->with('success', '¡Bienvenido a Estrés Cero!');
         }
 
         return back()->withErrors([
@@ -43,22 +42,25 @@ class AuthController extends Controller
     }
 
     public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => 'required|string|min:8',
+    ]);
 
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $user = User::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+    ]);
 
-        Auth::login($user);
-        return redirect()->route('dashboard')->with('success', '¡Cuenta creada exitosamente!');
-    }
+    Auth::login($user); // ✅ Primero loguea al usuario
+
+    $user->sendEmailVerificationNotification(); // ✅ Luego manda el correo ya con sesión activa
+
+    return redirect()->route('verification.notice')->with('success', '¡Cuenta creada! Revisa tu correo para verificar tu cuenta.');
+}
 
     public function logout(Request $request)
     {

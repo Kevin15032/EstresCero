@@ -4,85 +4,153 @@
 
 @section('estilos')
 <style>
-    .exercise-card {
-        transition: transform 0.3s ease;
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        height: auto; /* Cambiado de altura fija a auto */
-    }
-    .exercise-card:hover {
-        transform: translateY(-5px);
-    }
-    .duration-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: #457B9D;
-        color: white;
-        padding: 5px 10px;
-        border-radius: 15px;
-        font-size: 0.9rem;
-    }
+    /* Carrusel */
     .carousel-item {
-        height: 300px;
-        background-color: #1D3557;
-        border-radius: 15px;
+        position: relative;
+        height: 350px;
+        background-size: cover;
+        background-position: center;
+        border-radius: 20px;
+        overflow: hidden;
     }
+
+    .carousel-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(3px);
+        z-index: 1;
+    }
+
     .carousel-caption {
-        background: rgba(0,0,0,0.5);
-        border-radius: 10px;
-        padding: 20px;
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        color: white;
+        padding: 0 20px;
+        max-width: 700px;
     }
+
+    .carousel-caption h3 {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
     .btn-custom {
         background-color: #457B9D;
         color: white;
         border: none;
+        border-radius: 20px;
+        padding: 8px 20px;
         transition: all 0.3s ease;
     }
+
     .btn-custom:hover {
         background-color: #1D3557;
-        transform: translateY(-2px);
+        transform: scale(1.05);
     }
-    .modal-content {
-        border-radius: 15px;
-    }
-    .video-container {
-        position: relative;
-        padding-bottom: 56.25%;
-        height: 0;
+
+    /* Tarjetas */
+    .exercise-card {
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         overflow: hidden;
-    }
-    .video-container iframe {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
         height: 100%;
-        border-radius: 10px;
+        opacity: 0;
+        animation: fadeInUp 0.6s ease forwards;
     }
+
+    .exercise-card:hover {
+        transform: translateY(-4px);
+        transition: transform 0.3s ease;
+    }
+
     .exercise-image {
-        height: 200px;
+        width: 100%;
+        height: 180px;
         object-fit: cover;
-        border-top-left-radius: 10px;
-        border-top-right-radius: 10px;
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 1rem;
+        flex: 1;
+    }
+
+    .card-body h5 {
+        font-size: 1.1rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-body p {
+        font-size: 0.95rem;
+        flex-grow: 1;
+    }
+
+    .duration-badge {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        background-color: #457B9D;
+        color: white;
+        padding: 4px 10px;
+        font-size: 0.8rem;
+        border-radius: 12px;
+        z-index: 2;
+    }
+
+    /* Filtros */
+    .btn-filter {
+        background-color: #A8DADC;
+        border: none;
+        border-radius: 20px;
+        padding: 6px 16px;
+        margin: 5px;
+        color: #1D3557;
+        font-weight: 500;
+    }
+
+    .btn-filter.active {
+        background-color: #1D3557;
+        color: white;
+    }
+
+    /* Animación */
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 @endsection
 
 @section('contenido')
 <main class="container py-4">
-    <!-- Carousel de Destacados -->
-    <div id="featuredExercises" class="carousel slide mb-4" data-bs-ride="carousel">
+    <!-- Carrusel -->
+    <div id="featuredExercises" class="carousel slide mb-5" data-bs-ride="carousel">
         <div class="carousel-inner">
             @foreach($ejercicios->where('destacado', true) as $ejercicio)
-            <div class="carousel-item {{ $loop->first ? 'active' : '' }}">
+            <div class="carousel-item {{ $loop->first ? 'active' : '' }}"
+                style="background-image: url('{{ asset('storage/' . $ejercicio->imagen) }}');">
                 <div class="carousel-caption">
                     <h3>{{ $ejercicio->titulo }}</h3>
-                    <p>{{ $ejercicio->descripcion }}</p>
-                    <button class="btn btn-custom" onclick="showExercise({{ $ejercicio->id }})">
-                        Comenzar Ejercicio
-                    </button>
+                    <p>{{ Str::limit($ejercicio->descripcion, 300) }}</p>
+                    <button class="btn btn-custom" onclick="showExercise({{ $ejercicio->id }})">Comenzar Ejercicio</button>
                 </div>
             </div>
             @endforeach
@@ -95,34 +163,29 @@
         </button>
     </div>
 
-    <!-- Filtros de Categorías -->
+    <!-- Filtros -->
     <div class="text-center mb-4">
         <div class="btn-group" role="group">
-            <button class="btn btn-custom active" data-category="todos">Todos</button>
-            <button class="btn btn-custom" data-category="Meditación">Meditación</button>
-            <button class="btn btn-custom" data-category="Yoga">Yoga</button>
-            <button class="btn btn-custom" data-category="Respiración">Respiración</button>
+            <button class="btn btn-filter active" data-category="todos">Todos</button>
+            <button class="btn btn-filter" data-category="Meditación">Meditación</button>
+            <button class="btn btn-filter" data-category="Yoga">Yoga</button>
+            <button class="btn btn-filter" data-category="Respiración">Respiración</button>
         </div>
     </div>
 
-    <!-- Grid de Ejercicios -->
+    <!-- Tarjetas -->
     <div class="row g-4">
-        @foreach($ejercicios as $ejercicio)
+        @foreach($ejercicios as $index => $ejercicio)
         <div class="col-md-4 exercise-item" data-category="{{ $ejercicio->categoria }}">
-            <div class="exercise-card">
+            <div class="exercise-card position-relative" style="animation-delay: {{ $index * 0.1 }}s;">
                 @if($ejercicio->imagen)
-                    <img src="{{ asset('storage/' . $ejercicio->imagen) }}" 
-                         class="card-img-top exercise-image" 
-                         alt="{{ $ejercicio->titulo }}">
+                <span class="duration-badge">{{ $ejercicio->duracion }} min</span>
+                <img src="{{ asset('storage/' . $ejercicio->imagen) }}" class="exercise-image" alt="{{ $ejercicio->titulo }}">
                 @endif
-                <div class="card-body position-relative">
-                    <span class="duration-badge">{{ $ejercicio->duracion }} min</span>
-                    <div class="text-center mb-3">
-                        <i class="{{ $ejercicio->icono }} text-primary" style="font-size: 3rem;"></i>
-                    </div>
-                    <h5 class="card-title text-center">{{ $ejercicio->titulo }}</h5>
-                    <p class="card-text">{{ Str::limit($ejercicio->descripcion, 100) }}</p>
-                    <button class="btn btn-custom w-100" onclick="showExercise({{ $ejercicio->id }})">
+                <div class="card-body">
+                    <h5>{{ $ejercicio->titulo }}</h5>
+                    <p>{{ Str::limit($ejercicio->descripcion, 100) }}</p>
+                    <button class="btn btn-custom w-100 mt-3" onclick="showExercise({{ $ejercicio->id }})">
                         Comenzar Ejercicio
                     </button>
                 </div>
@@ -132,10 +195,10 @@
     </div>
 </main>
 
-<!-- Modal del Ejercicio -->
+<!-- Modal -->
 <div class="modal fade" id="exerciseModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content">
+        <div class="modal-content rounded">
             <div class="modal-header">
                 <h5 class="modal-title" id="exerciseTitle"></h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
@@ -151,7 +214,6 @@
         </div>
     </div>
 </div>
-
 @endsection
 
 @section('scripts')
@@ -164,39 +226,27 @@ function showExercise(id) {
             document.getElementById('exerciseDescription').textContent = data.descripcion;
             document.getElementById('exerciseDuration').textContent = `${data.duracion} minutos`;
             document.getElementById('exerciseCategory').textContent = data.categoria;
-            
+
             const videoContainer = document.getElementById('videoContainer');
             if (data.video_url) {
-                // Convertir la URL de YouTube al formato embed correcto
                 let embedUrl = data.video_url;
-                
-                // Si es una URL normal de YouTube (watch?v=)
+
                 if (data.video_url.includes('watch?v=')) {
                     const videoId = data.video_url.split('watch?v=')[1].split('&')[0];
                     embedUrl = `https://www.youtube.com/embed/${videoId}`;
-                }
-                // Si es una URL corta (youtu.be)
-                else if (data.video_url.includes('youtu.be')) {
+                } else if (data.video_url.includes('youtu.be')) {
                     const videoId = data.video_url.split('youtu.be/')[1];
                     embedUrl = `https://www.youtube.com/embed/${videoId}`;
                 }
-                // Si ya es una URL de embed, la dejamos igual
-                
+
                 videoContainer.innerHTML = `
-                    <div class="video-container">
-                        <iframe 
-                            src="${embedUrl}"
-                            width="100%" 
-                            height="400"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                            allowfullscreen>
-                        </iframe>
+                    <div class="ratio ratio-16x9">
+                        <iframe src="${embedUrl}" frameborder="0" allowfullscreen></iframe>
                     </div>`;
             } else {
                 videoContainer.innerHTML = '<p class="text-center">No hay video disponible</p>';
             }
-            
+
             new bootstrap.Modal(document.getElementById('exerciseModal')).show();
         })
         .catch(error => {
@@ -205,21 +255,15 @@ function showExercise(id) {
         });
 }
 
-// Filtrado de categorías
-document.querySelectorAll('.btn-group .btn').forEach(button => {
-    button.addEventListener('click', function() {
+// Filtro de categorías
+document.querySelectorAll('.btn-filter').forEach(button => {
+    button.addEventListener('click', function () {
         const category = this.dataset.category;
-        
-        document.querySelectorAll('.btn-group .btn').forEach(btn => 
-            btn.classList.remove('active'));
+        document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
         this.classList.add('active');
-        
+
         document.querySelectorAll('.exercise-item').forEach(item => {
-            if (category === 'todos' || item.dataset.category === category) {
-                item.style.display = 'block';
-            } else {
-                item.style.display = 'none';
-            }
+            item.style.display = (category === 'todos' || item.dataset.category === category) ? 'block' : 'none';
         });
     });
 });

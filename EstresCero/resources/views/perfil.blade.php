@@ -4,171 +4,161 @@
 
 @section('estilos')
 <style>
-    .profile-section {
-        background-color: white;
-        border-radius: 10px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        padding: 20px;
-        margin-bottom: 20px;
+    .perfil-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        animation: fadeIn 0.6s ease;
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
     }
-    .form-control:focus {
-        border-color: #457B9D;
-        box-shadow: 0 0 0 0.2rem rgba(69, 123, 157, 0.25);
-    }
-    .edit-form {
-        display: none;
-    }
-    .profile-info {
-        padding: 20px;
-    }
-    .profile-info p {
-        margin-bottom: 10px;
-        font-size: 1.1em;
-    }
-    .profile-label {
-        font-weight: bold;
-        color: #457B9D;
-    }
-    .profile-info img {
+
+    .perfil-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
         border: 4px solid #457B9D;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
+        margin-bottom: 15px;
+        transition: transform 0.3s;
     }
-    .profile-info img:hover {
+
+    .perfil-avatar:hover {
         transform: scale(1.05);
     }
-    .btn-danger {
-        background-color: #e63946;
-        border-color: #e63946;
-        transition: all 0.3s ease;
+
+    .perfil-info {
+        text-align: left;
+        margin-top: 20px;
     }
-    .btn-danger:hover {
-        background-color: #dc2f3d;
-        border-color: #dc2f3d;
-        transform: translateY(-2px);
+
+    .perfil-info p {
+        font-size: 16px;
+        margin: 10px 0;
+    }
+
+    .perfil-info strong {
+        color: #1D3557;
+    }
+
+    .btn-edit {
+        background-color: #1D4ED8;
+        color: #fff;
+        padding: 10px 20px;
+        font-weight: 500;
+        border: none;
+        border-radius: 30px;
+        margin-bottom: 20px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-edit:hover {
+        background-color: #2563EB;
+    }
+
+    .btn-logout {
+        background-color: #DC3545;
+        color: #fff;
+        border: none;
+        border-radius: 30px;
+        padding: 10px 20px;
+        font-weight: 500;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-logout:hover {
+        background-color: #c82333;
+    }
+
+    .form-control {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background-color: #1D4ED8;
+        border: none;
+        border-radius: 20px;
+        font-weight: 500;
+        padding: 10px 25px;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563EB;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        border: none;
+        border-radius: 20px;
+        padding: 10px 25px;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 </style>
 @endsection
 
 @section('contenido')
-<main class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="profile-section">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3>Mi Perfil</h3>
-                    <button class="btn btn-primary" onclick="toggleEditForm()">
-                        <i class="fas fa-edit"></i> Editar Perfil
-                    </button>
+<main class="container py-5">
+    <div class="perfil-card">
+        @if(session('edit_mode'))
+            <h4 class="mb-4">Editar Perfil</h4>
+            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+
+                <img src="{{ asset('storage/' . $user->avatar) }}" class="perfil-avatar" alt="Foto de perfil">
+                <div class="mb-3">
+                    <label class="form-label">Cambiar foto de perfil</label>
+                    <input type="file" name="avatar" class="form-control">
                 </div>
 
-                <!-- Información estática -->
-                <div class="profile-info" id="profileInfo">
-                    <div class="text-center mb-4">
-                        @if($user->avatar)
-                            <img src="{{ asset('storage/' . $user->avatar) }}" 
-                                 class="rounded-circle mb-3" 
-                                 style="width: 150px; height: 150px; object-fit: cover;"
-                                 alt="Avatar">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random&color=fff&size=150&bold=true" 
-                                 class="rounded-circle mb-3"
-                                 style="width: 150px; height: 150px; object-fit: cover;"
-                                 alt="Avatar">
-                        @endif
-                    </div>
-                    <p><span class="profile-label">Nombre:</span> {{ $user->name }}</p>
-                    <p><span class="profile-label">Correo:</span> {{ $user->email }}</p>
-                    
-                    <!-- Agregar el botón de cerrar sesión -->
-                    <div class="text-center mt-4">
-                        <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-danger">
-                                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
-                            </button>
-                        </form>
-                    </div>
+                <div class="mb-3 text-start">
+                    <label class="form-label">Nombre Completo</label>
+                    <input type="text" name="name" value="{{ $user->name }}" class="form-control" required>
                 </div>
 
-                <!-- Formulario de edición (oculto por defecto) -->
-                <div class="edit-form" id="editForm">
-                    <form action="{{ route('perfil.update') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <!-- Avatar actual y subida -->
-                        <div class="mb-4 text-center">
-                            @if($user->avatar)
-                                <img src="{{ asset('storage/' . $user->avatar) }}" 
-                                     class="rounded-circle mb-3" 
-                                     style="width: 150px; height: 150px; object-fit: cover;"
-                                     alt="Avatar">
-                            @else
-                                <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&background=random&color=fff&size=150&bold=true" 
-                                     class="rounded-circle mb-3"
-                                     style="width: 150px; height: 150px; object-fit: cover;"
-                                     alt="Avatar">
-                            @endif
-                            <div class="mb-3">
-                                <label for="avatar" class="form-label">Cambiar foto de perfil</label>
-                                <input type="file" class="form-control" id="avatar" name="avatar" accept="image/*">
-                                @error('avatar')
-                                    <small class="text-danger">{{ $message }}</small>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="name" class="form-label">Nombre Completo</label>
-                            <input type="text" class="form-control" id="name" name="name" 
-                                   value="{{ old('name', $user->name) }}" required>
-                            @error('name')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="email" class="form-label">Correo Electrónico</label>
-                            <input type="email" class="form-control" id="email" name="email" 
-                                   value="{{ old('email', $user->email) }}" required>
-                            @error('email')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Nueva Contraseña</label>
-                            <input type="password" class="form-control" id="password" name="password" 
-                                   placeholder="Dejar en blanco para mantener la actual">
-                            @error('password')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
-                        </div>
-
-                        <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
-                            <button type="button" class="btn btn-secondary" onclick="toggleEditForm()">Cancelar</button>
-                        </div>
-                    </form>
+                <div class="mb-3 text-start">
+                    <label class="form-label">Correo Electrónico</label>
+                    <input type="email" name="email" value="{{ $user->email }}" class="form-control" required>
                 </div>
+
+                <div class="mb-3 text-start">
+                    <label class="form-label">Nueva Contraseña</label>
+                    <input type="password" name="password" class="form-control" placeholder="********">
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <a href="{{ route('profile.cancel') }}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        @else
+            <h4 class="mb-4">Mi Perfil</h4>
+            <img src="{{ asset('storage/' . $user->avatar) }}" class="perfil-avatar" alt="Foto de perfil">
+            <div class="perfil-info mt-4">
+                <p><strong>Nombre:</strong> {{ $user->name }}</p>
+                <p><strong>Correo:</strong> {{ $user->email }}</p>
             </div>
-        </div>
+
+            <div class="d-flex justify-content-center gap-3 mt-4">
+                <a href="{{ route('profile.edit') }}" class="btn btn-edit"><i class="bi bi-pencil-square"></i> Editar Perfil</a>
+                <form action="{{ route('logout') }}" method="POST">
+                    @csrf
+                    <button type="submit" class="btn btn-logout"><i class="bi bi-box-arrow-right"></i> Cerrar Sesión</button>
+                </form>
+            </div>
+        @endif
     </div>
 </main>
-@endsection
-
-@section('scripts')
-<script>
-function toggleEditForm() {
-    const profileInfo = document.getElementById('profileInfo');
-    const editForm = document.getElementById('editForm');
-    
-    if (editForm.style.display === 'none' || editForm.style.display === '') {
-        profileInfo.style.display = 'none';
-        editForm.style.display = 'block';
-    } else {
-        profileInfo.style.display = 'block';
-        editForm.style.display = 'none';
-    }
-}
-</script>
 @endsection
