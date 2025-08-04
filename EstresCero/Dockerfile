@@ -43,3 +43,6 @@ RUN composer dump-autoload --optimize
 
 # Establecer permisos
 RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+
+# === Agrega esta línea para correr Laravel ===
+CMD ["php", "artisan", "serve", "--host=0.0.0.0", "--port=10000"]
