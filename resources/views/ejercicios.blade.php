@@ -219,7 +219,8 @@
 @section('scripts')
 <script>
 function showExercise(id) {
-    fetch(`/ejercicios/${id}`)
+    fetch(`/detalle-ejercicio/${id}`)
+
         .then(response => response.json())
         .then(data => {
             document.getElementById('exerciseTitle').textContent = data.titulo;

@@ -57,7 +57,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Ejercicios
     Route::get('/ejercicios', [UserEjercicioController::class, 'index'])->name('ejercicios');
-    Route::get('/ejercicios/{ejercicio}', [UserEjercicioController::class, 'show'])->name('ejercicios.show');
+    Route::get('/detalle-ejercicio/{ejercicio}', [UserEjercicioController::class, 'show'])->name('ejercicios.detalle');
+
 
     // Seguimiento emocional
     Route::get('/seguimiento', [EmotionalEntryController::class, 'index'])->name('seguimiento');
